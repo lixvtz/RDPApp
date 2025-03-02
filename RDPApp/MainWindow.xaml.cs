@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,6 +12,12 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using Microsoft.UI.Windowing;
+using Windows.Graphics;
+using Microsoft.UI.Composition.SystemBackdrops;
+using Microsoft.UI;
+using RDPApp.Pages;
+using Windows.Networking.NetworkOperators;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -25,12 +31,54 @@ namespace RDPApp
     {
         public MainWindow()
         {
+            var width = 520;
+            var height = 360;
+            SetWindowSize(width, height);
+            CenterWindow(width, height);
+            SetTitleBar(AppTitleBar);
+            InitializeMica();
+
+            // Set window non-resizable and non-maximizable
+            var appWindowPresenter = this.AppWindow.Presenter as OverlappedPresenter;
+            appWindowPresenter.IsResizable = false;
+            appWindowPresenter.IsMaximizable = false;
+
             this.InitializeComponent();
         }
 
-        private void myButton_Click(object sender, RoutedEventArgs e)
+        private void InitializeMica()
         {
-            myButton.Content = "Clicked";
+            this.SystemBackdrop = new MicaBackdrop { Kind = MicaKind.Base };
+            ExtendsContentIntoTitleBar = true;
+        }
+        private void SetWindowSize(int width, int height)
+        {
+            if (AppWindow is not null)
+            {
+                AppWindow.Resize(new SizeInt32(width, height));
+            }
+        }
+        private void CenterWindow(int width, int height)
+        {
+            if (AppWindow is not null)
+            {
+                var displayArea = DisplayArea.GetFromWindowId(
+                    AppWindow.Id, DisplayAreaFallback.Primary);
+
+                AppWindow.Move(new PointInt32(
+                    (displayArea.WorkArea.Width - width) / 2,
+                    (displayArea.WorkArea.Height - height) / 2));
+            }
+        }
+        private void NavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args) // Tab Navigator
+        {
+            var selectedItem = (NavigationViewItem)args.SelectedItem;
+            if (selectedItem != null)
+            {
+                string pageName = "RDPApp.Pages." + selectedItem.Tag;
+                Type pageType = Type.GetType(pageName);
+                ContentFrame.Navigate(pageType);
+            }
         }
     }
 }

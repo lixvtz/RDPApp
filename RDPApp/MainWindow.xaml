@@ -9,7 +9,46 @@
     mc:Ignorable="d"
     Title="RDPApp">
 
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-        <Button x:Name="myButton" Click="myButton_Click">Click Me</Button>
-    </StackPanel>
+    <Grid>
+        <!--idk wtf this key does but it is necessary why.-->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--Titlebar-->
+        <StackPanel 
+        x:Name="AppTitleBar"
+        Grid.Row="0"
+        Orientation="Horizontal">
+            <Image
+                Margin="16 10 0 0"
+                x:Name="AppFontIcon"
+                Width="16"
+                Height="16"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Source="/Assets/thatonespecificgaymeingcompnay.png" /> <!--That one specific gaymeing compnay ;)-->
+            <TextBlock Margin="8 10 0 0" x:Name="AppTitleBarLabel" VerticalAlignment="Center">RDPApp</TextBlock>
+        </StackPanel>
+
+        <!-- TopNavigationView -->
+        <NavigationView 
+        x:Name="NavigationView"
+        Grid.Row="1"
+        PaneDisplayMode="Top"
+        Margin="0,0,0,0"
+        Height="Auto"
+        IsBackButtonVisible="Collapsed"
+        SelectionChanged="NavigationView_SelectionChanged">
+            <!-- Tabs -->
+            <NavigationView.MenuItems>
+                <NavigationViewItem Icon="Globe" Content="Referential Blockage" Tag="ReferentialBlockagePage" IsSelected="True"/>
+                <NavigationViewItem Icon="OtherUser" Content="Usercustom Blockage" Tag="UsercustomBlockagePage"/>
+            </NavigationView.MenuItems>
+
+            <!-- UI Elements below NavigationView. RDPApp.Pages.[Tag]-->
+            <Frame x:Name="ContentFrame"/>
+        </NavigationView>
+    </Grid>
 </Window>

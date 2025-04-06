@@ -25,6 +25,8 @@ using System.Threading.Tasks;
 using System.Threading;
 using WinDivertSharp;
 using Windows.Storage;
+using System.Net;
+using System.Text;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -93,16 +95,16 @@ namespace RDPApp.Pages
         {
             string filter = "outbound && !loopback && ip && tcp.DstPort == 80 && tcp.PayloadLength > 0"; // for now just catching all the HTTP connection//s, later we will add more filters for the other protocols like UDP and ICMP and maybe even DNS if we are feeling spicy. Also, this is a very bad filter, please don't use it in production. I am not responsible for any damage caused by this code. Use at your own risk. Also, this is a very bad filter, please don't use it in production. I am not responsible for any damage caused by this code. Use at your own risk. Also, this is a very bad filter, please don't use it in production. I am not responsible for any damage caused by this code. Use at your own risk. //wtf Copilot is making -iq commmentos.
             var handle = WinDivert.WinDivertOpen(filter, WinDivertSharp.WinDivertLayer.Network, 510, WinDivertOpenFlags.Debug);
-
             if (handle == IntPtr.Zero || handle == new IntPtr(-1))
             {
                 Debug.WriteLine("Failed to open WinDivert handle with Win32 error code {0}.", Marshal.GetLastWin32Error());
                 return;
             }
-
             var packetBuffer = new WinDivertBuffer();
             WinDivertAddress addr = new WinDivertAddress();
             uint readLen = 0;
+
+            uint targetIp = (BitConverter.ToUInt32(IPAddress.Parse("100.18.123.34").GetAddressBytes(), 0));
 
             while (true)
             {
@@ -116,14 +118,24 @@ namespace RDPApp.Pages
                 {
                     var parsed = WinDivert.WinDivertHelperParsePacket(packetBuffer, readLen);
 
+                    byte[] payloadContentHexadecimal = new byte[parsed.PacketPayloadLength];
+                    Marshal.Copy((IntPtr)parsed.PacketPayload, payloadContentHexadecimal, 0, (int)parsed.PacketPayloadLength);
+                    string payloadContentUtf8 = Encoding.UTF8.GetString(payloadContentHexadecimal);
+                    Debug.WriteLine(payloadContentUtf8);
+
                     if (parsed.TcpHeader != null)
                     {
-                        parsed.TcpHeader->Rst = 0; // I think there will be a better way to failize the packet but my -iq momentos can't find sugobye
-                        parsed.TcpHeader->Ack = 0; 
-                        parsed.TcpHeader->Syn = 0; 
-                        parsed.TcpHeader->Fin = 1; // why is RST still not dropping the packet the rage7 based entertainment blockbuster is still waiting for saving data.. FIN is working
-                        parsed.TcpHeader->Psh = 0; 
-                        parsed.TcpHeader->Urg = 0; 
+                        if (parsed.IPv4Header->DstAddr.Equals(new IPAddress(targetIp)))
+                        {
+                            Debug.WriteLine("Packet is from the target IP address.");
+                            parsed.TcpHeader->Rst = 0; // I think there will be a better way to failize the packet but my -iq momentos can't find sugobye
+                            parsed.TcpHeader->Ack = 0;
+                            parsed.TcpHeader->Syn = 0;
+                            parsed.TcpHeader->Fin = 1; // why is RST still not dropping the packet the rage7 based entertainment blockbuster is still waiting for saving data.. FIN is working
+                            parsed.TcpHeader->Psh = 0;
+                            parsed.TcpHeader->Urg = 0;
+                        }
+                        Debug.WriteLine("DstAddr {0}", parsed.IPv4Header->DstAddr);
                     }
 
                     WinDivert.WinDivertHelperCalcChecksums(packetBuffer, readLen, ref addr, WinDivertChecksumHelperParam.All);
@@ -138,6 +150,12 @@ namespace RDPApp.Pages
             }
             WinDivert.WinDivertClose(handle);
         }
+
+
+
+
+
+
 
         //private async void CursedWinDivertServiceInitializeFunctionPrimeX(object sender, RoutedEventArgs e) //testing ;)
         //{

@@ -18,6 +18,14 @@ using Microsoft.UI.Composition.SystemBackdrops;
 using Microsoft.UI;
 using RDPApp.Pages;
 using Windows.Networking.NetworkOperators;
+using System.Runtime.InteropServices;
+using System.Threading;
+using WinDivertSharp;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using Microsoft.VisualBasic;
+using RDPApp;
+using Windows.UI.Popups;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -31,13 +39,12 @@ namespace RDPApp
     {
         public MainWindow()
         {
-            var width = 520;
-            var height = 360;
+            var width = 480;
+            var height = 320;
             SetWindowSize(width, height);
             CenterWindow(width, height);
             SetTitleBar(AppTitleBar);
-            InitializeMica();
-
+            InitializeMica(4);
             // Set window non-resizable and non-maximizable
             var appWindowPresenter = this.AppWindow.Presenter as OverlappedPresenter;
             appWindowPresenter.IsResizable = false;
@@ -46,12 +53,28 @@ namespace RDPApp
             this.InitializeComponent();
         }
 
-        private void InitializeMica()
+        public void InitializeMica(int Style=4)
         {
-            this.SystemBackdrop = new MicaBackdrop { Kind = MicaKind.Base };
-            ExtendsContentIntoTitleBar = true;
+            switch (Style) {
+                case 1:
+                    ExtendsContentIntoTitleBar = true;
+                    this.SystemBackdrop = new MicaBackdrop { Kind = MicaKind.Base };
+                    break;
+                case 2:
+                    ExtendsContentIntoTitleBar = true;
+                    this.SystemBackdrop = new MicaBackdrop { Kind = MicaKind.BaseAlt };
+                    break;
+                case 3:
+                    ExtendsContentIntoTitleBar = true;
+                    this.SystemBackdrop = new DesktopAcrylicBackdrop { };
+                    break;
+                case 4:
+                    ExtendsContentIntoTitleBar = true;
+                    this.SystemBackdrop = null;
+                    break;
+            }
         }
-        private void SetWindowSize(int width, int height)
+        public void SetWindowSize(int width, int height)
         {
             if (AppWindow is not null)
             {

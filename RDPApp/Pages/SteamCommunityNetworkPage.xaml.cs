@@ -21,20 +21,11 @@ namespace RDPApp.Pages
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class Settings : Page
+    public sealed partial class SteamCommunityNetworkPage : Page
     {
-        public Settings()
+        public SteamCommunityNetworkPage()
         {
             this.InitializeComponent();
-            this.NavigationCacheMode = NavigationCacheMode.Required;
-        }
-
-        private void BackdropStyleChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var selectedItem = (ComboBoxItem)BackdropStyleSelection.SelectedItem;
-            var selectedTag = selectedItem.Tag;
-            MainWindow Basewindow = (MainWindow)((App)Application.Current).m_window;
-            Basewindow.InitializeMica(Convert.ToInt32(selectedTag));
         }
     }
 }

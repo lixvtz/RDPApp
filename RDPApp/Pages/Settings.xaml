@@ -11,6 +11,34 @@
     <!--Background="{ThemeResource ApplicationPageBackgroundThemeBrush}-->
 
     <Grid>
-        <TextBlock>Settings</TextBlock>
+        <!--idk wtf this key does but it is necessary why.-->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Height="Auto" FontSize="24" FontWeight="Bold" Margin="10 0 0 0" HorizontalAlignment="Left" VerticalAlignment="Top">Settings</TextBlock>
+        
+        <Expander Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="10 0 10 0">
+            <!--Expander head-->
+            <Expander.Header>
+                <Grid>
+                    <TextBlock HorizontalAlignment="Left" Padding="0 5 0 0">Backdrop Material</TextBlock>
+                    <ComboBox HorizontalAlignment="Right" Width="100" SelectionChanged="BackdropStyleChanged" x:Name="BackdropStyleSelection">
+                        <ComboBoxItem Content="Mica" Tag="1"/>
+                        <ComboBoxItem Content="Mica Alt" Tag="2"/>
+                        <ComboBoxItem Content="Acrylic" Tag="3"/>
+                        <ComboBoxItem Content="None" Tag="4"/>
+                    </ComboBox>
+                </Grid>
+            </Expander.Header>
+            
+            <!--Expander body-->
+            <Expander.Content>
+                <Grid>
+                    <TextBlock TextWrapping="WrapWholeWords"  Text="Mica: A subtle, performance-friendly material that adapts to the desktop wallpaper for a cohesive visual experience.&#10;Mica Alt: A variant of Mica optimized for surfaces with multiple tabs or layered interfaces, providing better contrast.&#10;Acrylic: A translucent, blurred material that adds depth and dynamic responsiveness to UI elements."></TextBlock>
+                </Grid>
+            </Expander.Content>
+        </Expander>
     </Grid>
 </Page>

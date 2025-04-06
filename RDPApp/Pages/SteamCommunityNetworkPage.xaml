@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Page
-    x:Class="RDPApp.Pages.UsercustomBlockagePage"
+    x:Class="RDPApp.Pages.SteamCommunityNetworkPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:RDPApp.Pages"
@@ -8,9 +8,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="Transparent">
-    <!--Background="{ThemeResource ApplicationPageBackgroundThemeBrush}-->
+    <!--{ThemeResource ApplicationPageBackgroundThemeBrush}-->
 
     <Grid>
-        <TextBlock FontSize="24" FontWeight="Bold" Margin="10 0 0 0" HorizontalAlignment="Left" VerticalAlignment="Top">User Generated Blockage</TextBlock>
+        <TextBlock Grid.Row="0" Height="Auto" FontSize="24" FontWeight="Bold" Margin="10 0 0 0" HorizontalAlignment="Left" VerticalAlignment="Top">SteamCommunity Network</TextBlock>
     </Grid>
 </Page>

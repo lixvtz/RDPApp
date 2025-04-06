@@ -26,6 +26,7 @@ namespace RDPApp.Pages
         public UsercustomBlockagePage()
         {
             this.InitializeComponent();
+            this.NavigationCacheMode = NavigationCacheMode.Required;
         }
     }
 }

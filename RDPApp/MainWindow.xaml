@@ -22,31 +22,33 @@
         Grid.Row="0"
         Orientation="Horizontal">
             <Image
-                Margin="16 10 0 0"
+                Margin="16 10 0 8"
                 x:Name="AppFontIcon"
                 Width="16"
                 Height="16"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Source="/Assets/thatonespecificgaymeingcompnay.png" /> <!--That one specific gaymeing compnay ;)-->
-            <TextBlock Margin="8 10 0 0" x:Name="AppTitleBarLabel" VerticalAlignment="Center">RDPApp</TextBlock>
+            <TextBlock Margin="8 10 0 10" x:Name="AppTitleBarLabel" VerticalAlignment="Center">RDPApp</TextBlock>
         </StackPanel>
 
         <!-- TopNavigationView -->
         <NavigationView 
         x:Name="NavigationView"
         Grid.Row="1"
-        PaneDisplayMode="Top"
+        PaneDisplayMode="LeftCompact"
+        IsPaneToggleButtonVisible="False"
         Margin="0,0,0,0"
         Height="Auto"
         IsBackButtonVisible="Collapsed"
         SelectionChanged="NavigationView_SelectionChanged">
             <!-- Tabs -->
             <NavigationView.MenuItems>
-                <NavigationViewItem Icon="Globe" Content="Referential Blockage" Tag="ReferentialBlockagePage" IsSelected="True"/>
-                <NavigationViewItem Icon="OtherUser" Content="Usercustom Blockage" Tag="UsercustomBlockagePage"/>
+                <NavigationViewItem Icon="ProtectedDocument" Content="Referential Blockage" Tag="ReferentialBlockagePage" IsSelected="True"/>
+                <NavigationViewItem Icon="OtherUser" Content="User Generated Blockage" Tag="UsercustomBlockagePage"/>
+                <NavigationViewItem Icon="Globe" Content="SteamCommunity Network" Tag="SteamCommunityNetworkPage"/>
+                <NavigationViewItem Icon="Favorite" Content="Experimental" Tag="ExperimentalPage"/>
             </NavigationView.MenuItems>
-
             <!-- UI Elements below NavigationView. RDPApp.Pages.[Tag]-->
             <Frame x:Name="ContentFrame"/>
         </NavigationView>

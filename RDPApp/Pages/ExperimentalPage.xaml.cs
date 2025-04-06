@@ -12,6 +12,7 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
+using WinDivertSharp;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -21,20 +22,26 @@ namespace RDPApp.Pages
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class Settings : Page
+    public sealed partial class ExperimentalPage : Page
     {
-        public Settings()
+        public ExperimentalPage()
         {
             this.InitializeComponent();
-            this.NavigationCacheMode = NavigationCacheMode.Required;
         }
 
-        private void BackdropStyleChanged(object sender, SelectionChangedEventArgs e)
+        public void ValidateCheck_Click(object sender, RoutedEventArgs e)
         {
-            var selectedItem = (ComboBoxItem)BackdropStyleSelection.SelectedItem;
-            var selectedTag = selectedItem.Tag;
-            MainWindow Basewindow = (MainWindow)((App)Application.Current).m_window;
-            Basewindow.InitializeMica(Convert.ToInt32(selectedTag));
+            string beingtestedfilter = FilterTextBox.Text;
+            string errormessage = string.Empty;
+            uint a = 0; //please someone fix errorpos functionality
+            if (!WinDivert.WinDivertHelperCheckFilter(beingtestedfilter, WinDivertLayer.Network, out errormessage, ref a))
+            {
+                ValidationResult.Text = "Filter is invalid: " + errormessage + ", " + a;
+            }
+            else
+            {
+                ValidationResult.Text = "Filter is valid.";
+            }
         }
     }
 }

@@ -11,6 +11,11 @@
     <!--{ThemeResource ApplicationPageBackgroundThemeBrush}-->
 
     <Grid>
-        <TextBlock Grid.Row="0" Height="Auto" FontSize="24" FontWeight="Bold" Margin="10 0 0 0" HorizontalAlignment="Left" VerticalAlignment="Top">SteamCommunity Network</TextBlock>
+        <CommandBar HorizontalAlignment="Stretch">
+            <AppBarButton Icon="Add" Label="New" Click="NewEntry_Click" />
+        </CommandBar>
+        <ScrollViewer Margin="10,50,10,10">
+            <StackPanel x:Name="ButtonsPanel" Orientation="Vertical" />
+        </ScrollViewer>
     </Grid>
 </Page>

@@ -1,32 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml;
+﻿using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Composition.SystemBackdrops;
-using Microsoft.VisualBasic;
-using Microsoft.VisualBasic.FileIO;
-using System.Drawing;
+using System;
+using System.Diagnostics;
+using System.Net;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using WinDivertSharp;
 using Windows.Media.Core;
 using Windows.Media.Playback;
-using Windows.UI.Notifications;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using System.Threading;
-using WinDivertSharp;
-using Windows.Storage;
-using System.Net;
-using System.Text;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
@@ -104,7 +89,9 @@ namespace RDPApp.Pages
             WinDivertAddress addr = new WinDivertAddress();
             uint readLen = 0;
 
-            uint targetIp = (BitConverter.ToUInt32(IPAddress.Parse("100.18.123.34").GetAddressBytes(), 0));
+            uint targetIp = (BitConverter.ToUInt32(IPAddress.Parse("192.81.241.100").GetAddressBytes(), 0));
+            uint localip = (BitConverter.ToUInt32(IPAddress.Parse("192.168.0.1").GetAddressBytes(), 0));
+
 
             while (true)
             {
@@ -123,20 +110,16 @@ namespace RDPApp.Pages
                     string payloadContentUtf8 = Encoding.UTF8.GetString(payloadContentHexadecimal);
                     Debug.WriteLine(payloadContentUtf8);
 
-                    if (parsed.TcpHeader != null)
-                    {
-                        if (parsed.IPv4Header->DstAddr.Equals(new IPAddress(targetIp)))
-                        {
-                            Debug.WriteLine("Packet is from the target IP address.");
-                            parsed.TcpHeader->Rst = 0; // I think there will be a better way to failize the packet but my -iq momentos can't find sugobye
-                            parsed.TcpHeader->Ack = 0;
-                            parsed.TcpHeader->Syn = 0;
-                            parsed.TcpHeader->Fin = 1; // why is RST still not dropping the packet the rage7 based entertainment blockbuster is still waiting for saving data.. FIN is working
-                            parsed.TcpHeader->Psh = 0;
-                            parsed.TcpHeader->Urg = 0;
-                        }
-                        Debug.WriteLine("DstAddr {0}", parsed.IPv4Header->DstAddr);
-                    }
+                    if (parsed.IPv4Header->DstAddr.Equals(new IPAddress(targetIp)) || parsed.IPv4Header->DstAddr.Equals(new IPAddress(localip)) || parsed.IPv4Header->SrcAddr.Equals(new IPAddress(targetIp)) || parsed.IPv4Header->SrcAddr.Equals(new IPAddress(localip)))
+                   {
+                        Debug.WriteLine("Packet is from the target IP address.");
+                        parsed.TcpHeader->Rst = 0; // I think there will be a better way to failize the packet but my -iq momentos can't find sugobye
+                        parsed.TcpHeader->Ack = 0;
+                        parsed.TcpHeader->Syn = 0;
+                        parsed.TcpHeader->Fin = 1; // why is RST still not dropping the packet the rage7 based entertainment blockbuster is still waiting for saving data.. FIN is working
+                        parsed.TcpHeader->Psh = 0;
+                        parsed.TcpHeader->Urg = 0;
+                   }
 
                     WinDivert.WinDivertHelperCalcChecksums(packetBuffer, readLen, ref addr, WinDivertChecksumHelperParam.All);
 
